@@ -1,0 +1,20 @@
+life_journal_api/
+├── main.py
+├── apis/
+│   ├── __init__.py
+│   ├── weather/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   ├── google/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   ├── health/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   └── locations/
+│       ├── __init__.py
+│       └── routes.py
+├── core/
+│   ├── config.py
+│   └── dependencies.py
+└── requirements.txt
