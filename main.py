@@ -4,8 +4,13 @@ from apis.weather.routes import router as weather_router
 from apis.google.routes import router as google_router
 from apis.locations.routes import router as locations_router
 from apis.health.routes import router as health_router
+from core.db import Base, engine
+
 
 app = FastAPI(title="Life Journal API", version="0.1.0")
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 # Configure CORS
 app.add_middleware(
