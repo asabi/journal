@@ -5,6 +5,9 @@ from core.db import HealthData, get_db, HeartRate, Steps, SleepAnalysis, ActiveE
 from sqlalchemy.orm import Session
 from datetime import datetime
 from pydantic import Json, ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -20,6 +23,7 @@ async def post_health_data(data: HealthDataIn, db: Session = Depends(get_db)):
     """
     Accepts health data in JSON format and stores it in the database.
     """
+    logger.info(f"Received request data: {data}")  # Log the request data
     try:
         health_data = HealthData(data_type=data.data_type)
         db.add(health_data)
