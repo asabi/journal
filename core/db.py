@@ -57,6 +57,96 @@ class SleepAnalysis(Base):
     health_data = relationship(HealthData)
 
 
+class ActiveEnergy(Base):
+    __tablename__ = "active_energy"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class AppleStandTime(Base):
+    __tablename__ = "apple_stand_time"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class AppleExerciseTime(Base):
+    __tablename__ = "apple_exercise_time"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class HeadphoneAudioExposure(Base):
+    __tablename__ = "headphone_audio_exposure"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class SixMinuteWalkingTestDistance(Base):
+    __tablename__ = "six_minute_walking_test_distance"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class WalkingRunningDistance(Base):
+    __tablename__ = "walking_running_distance"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class RestingHeartRate(Base):
+    __tablename__ = "resting_heart_rate"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class BasalEnergyBurned(Base):
+    __tablename__ = "basal_energy_burned"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
+class Handwashing(Base):
+    __tablename__ = "handwashing"
+
+    id = Column(Integer, primary_key=True)
+    health_data_id = Column(Integer, ForeignKey('health_data.id'))
+    value = Column(Float)
+
+    health_data = relationship(HealthData)
+
+
 def get_db():
     db = SessionLocal()
     try:
