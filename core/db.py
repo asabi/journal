@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -17,6 +17,7 @@ class HealthData(Base):
     value = Column(Float)  # For numeric values
     text_value = Column(String)  # For string-based values (e.g., alerts)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    data = Column(JSON)  # Store the entire JSON payload
 
 
 def get_db():

@@ -4,15 +4,13 @@ from typing import List, Optional
 from core.db import HealthData, get_db
 from sqlalchemy.orm import Session
 from datetime import datetime
-
+from pydantic import Json
 
 router = APIRouter()
 
-# Pydantic model for incoming health data
+
 class HealthDataIn(BaseModel):
-    data_type: str
-    value: Optional[float] = None
-    text_value: Optional[str] = None
+    data: Json
 
 
 @router.post("/")
@@ -21,9 +19,8 @@ async def post_health_data(data: HealthDataIn, db: Session = Depends(get_db)):
     Accepts health data in JSON format and stores it in the database.
     """
     db_data = HealthData(
-        data_type=data.data_type,
-        value=data.value,
-        text_value=data.text_value,
+        data_type="health_data",
+        data=data.data,
         timestamp=datetime.utcnow()
     )
     db.add(db_data)
