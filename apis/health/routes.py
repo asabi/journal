@@ -13,10 +13,14 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+class Metric(BaseModel):
+    name: str
+    units: Optional[str] = None
+    data: List[dict]
+
+
 class HealthDataIn(BaseModel):
-    data_type: str
-    value: Optional[float] = None
-    json_data: Optional[Json] = None
+    metrics: List[Metric]
 
 
 @router.post("/")
@@ -26,57 +30,53 @@ async def post_health_data(data: HealthDataIn, db: Session = Depends(get_db)):
     """
     logger.info(f"Received request data: {data}")  # Log the request data
     try:
-        health_data = HealthData(data_type=data.data_type)
-        db.add(health_data)
-        db.commit()
-        db.refresh(health_data)
-
-        if data.value is not None:
-            # You might want to add more specific validation here based on data_type
-            if data.data_type == "heart_rate":
-                heart_rate = HeartRate(health_data_id=health_data.id, value=data.value)
-                db.add(heart_rate)
-            elif data.data_type == "steps":
-                steps = Steps(health_data_id=health_data.id, value=int(data.value))
-                db.add(steps)
-            elif data.data_type == "active_energy":
-                active_energy = ActiveEnergy(health_data_id=health_data.id, value=data.value)
-                db.add(active_energy)
-            elif data.data_type == "apple_stand_time":
-                apple_stand_time = AppleStandTime(health_data_id=health_data.id, value=data.value)
-                db.add(apple_stand_time)
-            elif data.data_type == "apple_exercise_time":
-                apple_exercise_time = AppleExerciseTime(health_data_id=health_data.id, value=data.value)
-                db.add(apple_exercise_time)
-            elif data.data_type == "headphone_audio_exposure":
-                headphone_audio_exposure = HeadphoneAudioExposure(health_data_id=health_data.id, value=data.value)
-                db.add(headphone_audio_exposure)
-            elif data.data_type == "six_minute_walking_test_distance":
-                six_minute_walking_test_distance = SixMinuteWalkingTestDistance(health_data_id=health_data.id, value=data.value)
-                db.add(six_minute_walking_test_distance)
-            elif data.data_type == "walking_running_distance":
-                walking_running_distance = WalkingRunningDistance(health_data_id=health_data.id, value=data.value)
-                db.add(walking_running_distance)
-            elif data.data_type == "resting_heart_rate":
-                resting_heart_rate = RestingHeartRate(health_data_id=health_data.id, value=data.value)
-                db.add(resting_heart_rate)
-            elif data.data_type == "basal_energy_burned":
-                basal_energy_burned = BasalEnergyBurned(health_data_id=health_data.id, value=data.value)
-                db.add(basal_energy_burned)
-            elif data.data_type == "handwashing":
-                handwashing = Handwashing(health_data_id=health_data.id, value=data.value)
-                db.add(handwashing)
+        for metric in data.metrics:
+            if metric.name == "active_energy":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
+            elif metric.name == "sleep_analysis":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
+            elif metric.name == "apple_stand_time":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
+            elif metric.name == "six_minute_walking_test_distance":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
+            elif metric.name == "step_count":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
+            elif metric.name == "walking_running_distance":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
+            elif metric.name == "handwashing":
+                for item in metric.data:
+                    health_data = HealthData(data_type=metric.name)
+                    db.add(health_data)
+                    db.commit()
+                    db.refresh(health_data)
             else:
-                # Handle other data types as needed
                 pass
 
-        if data.json_data:
-            sleep_analysis = SleepAnalysis(health_data_id=health_data.id, data=data.json_data)
-            db.add(sleep_analysis)
-
-        db.commit()
-
-        return {"status": "success", "data": health_data}
+        return {"status": "success"}
 
     except ValidationError as e:
         logger.error(f"Validation Error: {e}")
