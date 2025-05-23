@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from pydantic import Json, ValidationError
 import logging
+import logging_config
 
 logger = logging.getLogger(__name__)
 
@@ -78,8 +79,10 @@ async def post_health_data(data: HealthDataIn, db: Session = Depends(get_db)):
         return {"status": "success", "data": health_data}
 
     except ValidationError as e:
+        logger.error(f"Validation Error: {e}")
         return {"status": "error", "errors": e.errors()}
     except Exception as e:
+        logger.exception(f"An unexpected error occurred: {e}")
         return {"status": "error", "message": str(e)}
 
 
