@@ -15,7 +15,7 @@
 
 3. **Run the Docker container:**
    ```sh
-   docker run -d -p 8000:8000 --env-file .env life-journal-api
+   docker run -d -p 8000:8000 --env-file .env --restart unless-stopped --name journal life-journal-api
    ```
 
 4. **Access the API:**
