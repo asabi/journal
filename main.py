@@ -27,18 +27,13 @@ app.include_router(google_router, prefix="/google")
 app.include_router(locations_router, prefix="/locations")
 app.include_router(health_router, prefix="/health")
 
+
 @app.get("/")
 def read_root():
-    return {
-        "message": "Life Journal API",
-        "available_endpoints": [
-            "/weather",
-            "/google",
-            "/locations",
-            "/health"
-        ]
-    }
+    return {"message": "Life Journal API", "available_endpoints": ["/weather", "/google", "/locations", "/health"]}
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
