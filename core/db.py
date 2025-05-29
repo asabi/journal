@@ -190,6 +190,85 @@ class SleepAnalysis(BaseMetric, Base):
     deep = Column(Float, nullable=True)
 
 
+class WeatherAlerts(Base):
+    __tablename__ = "weather_alerts"
+    id = Column(Integer, primary_key=True)
+    location_name = Column(String)
+    headline = Column(String)
+    severity = Column(String)
+    urgency = Column(String)
+    areas = Column(String)
+    category = Column(String)
+    certainty = Column(String)
+    event = Column(String)
+    note = Column(String)
+    effective = Column(String)
+    expires = Column(String)
+    desc = Column(String)
+    instruction = Column(String)
+
+
+class AirQuality(Base):
+    __tablename__ = "air_quality"
+    id = Column(Integer, primary_key=True)
+    location_name = Column(String)
+    last_updated = Column(String)
+    co = Column(Float)  # Carbon Monoxide (μg/m3)
+    no2 = Column(Float)  # Nitrogen dioxide (μg/m3)
+    o3 = Column(Float)  # Ozone (μg/m3)
+    so2 = Column(Float)  # Sulphur dioxide (μg/m3)
+    pm2_5 = Column(Float)  # PM2.5 (μg/m3)
+    pm10 = Column(Float)  # PM10 (μg/m3)
+    us_epa_index = Column(Integer)  # US EPA standard
+    gb_defra_index = Column(Integer)  # UK DEFRA standard
+
+
+class MarineWeather(Base):
+    __tablename__ = "marine_weather"
+    id = Column(Integer, primary_key=True)
+    location_name = Column(String)
+    last_updated = Column(String)
+    tide_time = Column(String)
+    tide_height_mt = Column(Float)
+    tide_type = Column(String)  # high or low
+    swell_height_m = Column(Float)
+    swell_direction = Column(String)
+    swell_direction_degrees = Column(Integer)
+    swell_period_seconds = Column(Integer)
+    water_temp_c = Column(Float)
+    water_temp_f = Column(Float)
+
+
+class AstronomyData(Base):
+    __tablename__ = "astronomy_data"
+    id = Column(Integer, primary_key=True)
+    location_name = Column(String)
+    date = Column(String)
+    sunrise = Column(String)
+    sunset = Column(String)
+    moonrise = Column(String)
+    moonset = Column(String)
+    moon_phase = Column(String)
+    moon_illumination = Column(Integer)
+    is_moon_up = Column(Integer)
+    is_sun_up = Column(Integer)
+
+
+class LocationTrack(Base):
+    __tablename__ = "location_tracks"
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    lat = Column(Float)
+    lon = Column(Float)
+    alt = Column(Float, nullable=True)
+    acc = Column(Float, nullable=True)  # Accuracy in meters
+    batt = Column(Integer, nullable=True)  # Battery percentage
+    vel = Column(Float, nullable=True)  # Velocity
+    tid = Column(String, nullable=True)  # Tracker ID
+    city = Column(String)  # City name (for weather tracking)
+    last_weather_check = Column(DateTime, nullable=True)  # Last time weather was checked for this location
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -241,3 +320,43 @@ def save_metric(db, user_id, metric_name, metric_units, data_item, model_class):
     )
 
     db.commit()
+
+
+class WeatherData(Base):
+    __tablename__ = "weather_data"
+    id = Column(Integer, primary_key=True)
+    location_name = Column(String)
+    location_region = Column(String)
+    location_country = Column(String)
+    location_lat = Column(Float)
+    location_lon = Column(Float)
+    last_updated_epoch = Column(Integer)
+    last_updated = Column(String)
+    temp_c = Column(Float)
+    temp_f = Column(Float)
+    condition_text = Column(String)
+    condition_icon = Column(String)
+    condition_code = Column(Integer)
+    wind_mph = Column(Float)
+    wind_kph = Column(Float)
+    wind_degree = Column(Integer)
+    wind_dir = Column(String)
+    pressure_mb = Column(Integer)
+    pressure_in = Column(Integer)
+    precip_mm = Column(Float)
+    precip_in = Column(Float)
+    humidity = Column(Integer)
+    cloud = Column(Integer)
+    feelslike_c = Column(Float)
+    feelslike_f = Column(Float)
+    windchill_c = Column(Float)
+    windchill_f = Column(Float)
+    heatindex_c = Column(Float)
+    heatindex_f = Column(Float)
+    dewpoint_c = Column(Float)
+    dewpoint_f = Column(Float)
+    vis_km = Column(Integer)
+    vis_miles = Column(Integer)
+    uv = Column(Integer)
+    gust_mph = Column(Float)
+    gust_kph = Column(Float)
