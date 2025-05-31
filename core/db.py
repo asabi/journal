@@ -393,6 +393,7 @@ class CalendarEvent(Base):
     is_recurring = Column(Boolean, default=False)
     recurring_event_id = Column(String, nullable=True)
     conference_link = Column(String, nullable=True)
+    is_busy = Column(Boolean, default=True)  # True if event blocks time, False if transparent/free
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -193,6 +193,8 @@ class GoogleCalendarAPI:
                                     "is_recurring": "recurringEventId" in event,
                                     "recurring_event_id": event.get("recurringEventId"),
                                     "conference_link": self._get_conference_link(event),
+                                    "is_busy": event.get("transparency")
+                                    != "transparent",  # If transparency is not set or is "opaque", the event is busy
                                 }
                                 all_events.append(event_data)
                                 logger.debug(

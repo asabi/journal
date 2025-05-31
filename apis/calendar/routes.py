@@ -16,11 +16,20 @@ def get_calendar_configs():
     """Get calendar configurations from settings"""
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+    def format_email_for_filename(email):
+        """Convert email to a filename-safe format"""
+        name, domain = email.split("@")
+        # Replace dots with underscores in domain
+        domain = domain.replace(".", "_")
+        return f"{name}_{domain}"
+
     return [
         {
             "email": email,
-            "credentials_file": os.path.join(base_dir, "google_creds", f"{email.split('@')[0]}_credentials.json"),
-            "token_file": os.path.join(base_dir, "google_creds", f"{email.split('@')[0]}_token.pickle"),
+            "credentials_file": os.path.join(
+                base_dir, "google_creds", f"{format_email_for_filename(email)}_credentials.json"
+            ),
+            "token_file": os.path.join(base_dir, "google_creds", f"{format_email_for_filename(email)}_token.pickle"),
         }
         for email in settings.GOOGLE_CALENDAR_EMAILS
     ]
