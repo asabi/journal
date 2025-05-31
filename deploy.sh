@@ -26,9 +26,18 @@ docker run -d -p 8000:8000 --env-file .env --restart unless-stopped --name journ
 echo "⏳ Waiting for container to be ready..."
 sleep 5
 
-# Run database migrations
-echo "🔄 Running database migrations..."
-docker exec journal alembic upgrade head
+# Run database migrations (only if there are new ones)
+echo "🔄 Checking and running database migrations..."
+docker exec journal bash -c '
+current_rev=$(alembic current | cut -d" " -f1)
+head_rev=$(alembic heads | cut -d" " -f1)
+if [ "$current_rev" != "$head_rev" ]; then
+    echo "New migrations found, upgrading database..."
+    alembic upgrade head
+else
+    echo "Database is up to date, no migrations needed."
+fi
+'
 
 echo "✅ Deployment completed successfully!"
 echo "📝 You can check the logs with: docker logs journal"

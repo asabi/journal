@@ -12,6 +12,8 @@ from core.db import (
     SleepAnalysis,
     ActiveEnergy,
     AppleStandTime,
+    AppleStandHour,
+    AppleStairSpeedUp,
     AppleExerciseTime,
     HeadphoneAudioExposure,
     SixMinuteWalkingTestDistance,

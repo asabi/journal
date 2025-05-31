@@ -95,6 +95,14 @@ class AppleStandTime(BaseMetric, Base):
     __tablename__ = "health_apple_stand_time"
 
 
+class AppleStandHour(BaseMetric, Base):
+    __tablename__ = "health_apple_stand_hour"
+
+
+class AppleStairSpeedUp(BaseMetric, Base):
+    __tablename__ = "health_stair_speed_up"
+
+
 class AppleExerciseTime(BaseMetric, Base):
     __tablename__ = "health_apple_exercise_time"
 
