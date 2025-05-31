@@ -273,7 +273,12 @@ class LocationTrack(Base):
     batt = Column(Integer, nullable=True)  # Battery percentage
     vel = Column(Float, nullable=True)  # Velocity
     tid = Column(String, nullable=True)  # Tracker ID
-    city = Column(String)  # City name (for weather tracking)
+    city = Column(String)  # City name
+    state_province = Column(String, nullable=True)  # State/Province
+    country = Column(String, nullable=True)  # Country
+    country_code = Column(String, nullable=True)  # Country code (e.g., CA, US)
+    postal_code = Column(String, nullable=True)  # Postal/ZIP code
+    formatted_address = Column(String, nullable=True)  # Full formatted address
     last_weather_check = Column(DateTime, nullable=True)  # Last time weather was checked for this location
 
 

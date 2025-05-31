@@ -7,29 +7,62 @@ from datetime import datetime, timedelta
 import httpx
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
+from typing import Dict, Optional
 
 router = APIRouter()
 
 
-def get_city_from_coordinates(lat: float, lon: float) -> str:
-    """Get city name from coordinates using Nominatim geocoder"""
+def get_location_details(lat: float, lon: float) -> Dict[str, Optional[str]]:
+    """Get detailed location information from coordinates using Nominatim geocoder"""
     try:
         geolocator = Nominatim(user_agent="life_journal")
         location = geolocator.reverse(f"{lat}, {lon}", language="en")
+
+        if not location:
+            return {
+                "city": "Unknown",
+                "state_province": None,
+                "country": None,
+                "country_code": None,
+                "postal_code": None,
+                "formatted_address": None,
+            }
+
         address = location.raw.get("address", {})
 
-        # Try different address components in order of preference
+        # Try different address components for city name
         city = (
             address.get("city")
             or address.get("town")
             or address.get("village")
             or address.get("suburb")
             or address.get("county")
+            or "Unknown"
         )
-        return city if city else "Unknown"
+
+        # Get state/province (different keys in different countries)
+        state_province = (
+            address.get("state") or address.get("province") or address.get("region") or address.get("state_district")
+        )
+
+        return {
+            "city": city,
+            "state_province": state_province,
+            "country": address.get("country"),
+            "country_code": address.get("country_code", "").upper(),
+            "postal_code": address.get("postcode"),
+            "formatted_address": location.address,
+        }
     except (GeocoderTimedOut, Exception) as e:
         print(f"Geocoding error: {str(e)}")
-        return "Unknown"
+        return {
+            "city": "Unknown",
+            "state_province": None,
+            "country": None,
+            "country_code": None,
+            "postal_code": None,
+            "formatted_address": None,
+        }
 
 
 @router.post("/track", response_model=LocationTrackResponse)
@@ -43,8 +76,8 @@ async def track_location(
     fetch new weather data for the location.
     """
     try:
-        # Get city name from coordinates
-        city = get_city_from_coordinates(payload.lat, payload.lon)
+        # Get detailed location information from coordinates
+        location_details = get_location_details(payload.lat, payload.lon)
 
         # Create location track entry
         location_track = LocationTrack(
@@ -56,7 +89,12 @@ async def track_location(
             batt=payload.batt,
             vel=payload.vel,
             tid=payload.tid,
-            city=city,
+            city=location_details["city"],
+            state_province=location_details["state_province"],
+            country=location_details["country"],
+            country_code=location_details["country_code"],
+            postal_code=location_details["postal_code"],
+            formatted_address=location_details["formatted_address"],
         )
 
         db.add(location_track)
@@ -76,11 +114,16 @@ async def track_location(
 
         if last_location:
             # Update weather if:
-            # 1. City has changed, or
+            # 1. City/State/Country has changed, or
             # 2. No weather check in the last hour, or
             # 3. No previous weather check at all
+            location_changed = (
+                last_location.city != location_track.city
+                or last_location.state_province != location_track.state_province
+                or last_location.country != location_track.country
+            )
             should_update_weather = (
-                last_location.city != city
+                location_changed
                 or not last_location.last_weather_check
                 or datetime.utcnow() - last_location.last_weather_check > timedelta(hours=1)
             )
@@ -92,8 +135,15 @@ async def track_location(
             try:
                 # Create a new HTTP client for weather API
                 async with httpx.AsyncClient() as client:
+                    # Use full location name for weather lookup
+                    location_name = (
+                        f"{location_track.city}, {location_track.state_province}, {location_track.country_code}"
+                        if all([location_track.city, location_track.state_province, location_track.country_code])
+                        else location_track.city
+                    )
+
                     # Fetch weather data
-                    await post_all_weather_data(location=city, client=client, db=db)
+                    await post_all_weather_data(location=location_name, client=client, db=db)
 
                 # Update last_weather_check timestamp
                 location_track.last_weather_check = datetime.utcnow()

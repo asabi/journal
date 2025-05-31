@@ -31,6 +31,11 @@ class LocationTrackResponse(BaseModel):
     vel: Optional[float] = None
     tid: Optional[str] = None
     city: str
+    state_province: Optional[str] = None
+    country: Optional[str] = None
+    country_code: Optional[str] = None
+    postal_code: Optional[str] = None
+    formatted_address: Optional[str] = None
     last_weather_check: Optional[datetime] = None
 
     class Config:
