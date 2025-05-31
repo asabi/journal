@@ -41,6 +41,6 @@ echo "[$CURRENT_DATE] Starting daily sync..."
 make_api_call "/calendar/sync-today" "" "POST"
 
 # Get weather for Richmond, BC
-make_api_call "/weather/all?location=Richmond,BC"
+make_api_call "/weather/all?location=Richmond,BC" "" "POST"
 
 echo "[$CURRENT_DATE] Daily sync completed" 
