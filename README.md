@@ -53,7 +53,7 @@
    Add the following to your `.env` file:
    ```
    # API Authentication
-   API_KEY=your_secret_api_key_here
+   API_KEY=your-secret-key-here
 
    # Google Calendar Integration
    GOOGLE_CALENDAR_EMAILS=["your.email@gmail.com"]  # List of emails to sync
