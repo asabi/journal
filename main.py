@@ -1,10 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from apis.weather.routes import router as weather_router
 from apis.google.routes import router as google_router
 from apis.locations.routes import router as locations_router
 from apis.health.routes import router as health_router
 from core.db import Base, engine
+from core.security import get_api_key
 
 
 app = FastAPI(title="Life Journal API", version="0.1.0")
@@ -21,15 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers with prefixes
-app.include_router(weather_router, prefix="/weather")
-app.include_router(google_router, prefix="/google")
-app.include_router(locations_router, prefix="/locations")
-app.include_router(health_router, prefix="/health")
+# Include routers with prefixes and API key dependency
+app.include_router(weather_router, prefix="/weather", dependencies=[Depends(get_api_key)])
+app.include_router(google_router, prefix="/google", dependencies=[Depends(get_api_key)])
+app.include_router(locations_router, prefix="/locations", dependencies=[Depends(get_api_key)])
+app.include_router(health_router, prefix="/health", dependencies=[Depends(get_api_key)])
 
 
 @app.get("/")
-def read_root():
+async def read_root():
     return {"message": "Life Journal API", "available_endpoints": ["/weather", "/google", "/locations", "/health"]}
 
 

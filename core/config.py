@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Life Journal API"
     WEATHER_API_KEY: str = os.getenv("WEATHER_API_KEY", "")
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./health.db")
+    API_KEY: str = os.getenv("API_KEY", "your-secret-key-here")
 
     class Config:
         case_sensitive = True
