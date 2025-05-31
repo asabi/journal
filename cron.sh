@@ -5,8 +5,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Source the .env file if it exists
 if [ -f "$SCRIPT_DIR/.env" ]; then
-    # Export all variables from .env file
-    export $(cat "$SCRIPT_DIR/.env" | grep -v '^#' | xargs)
+    # Export all variables from .env file, excluding comments and section headers
+    export $(cat "$SCRIPT_DIR/.env" | grep -v '^#' | grep -v '^\[.*\]' | xargs)
 else
     echo "Error: .env file not found in $SCRIPT_DIR"
     exit 1
