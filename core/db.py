@@ -1,5 +1,5 @@
 # core/db.py (updated with upsert)
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, UniqueConstraint, Boolean
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.dialects import postgresql, sqlite
@@ -373,3 +373,27 @@ class WeatherData(Base):
     uv = Column(Integer)
     gust_mph = Column(Float)
     gust_kph = Column(Float)
+
+
+# core/db.py
+class CalendarEvent(Base):
+    __tablename__ = "calendar_events"
+    id = Column(Integer, primary_key=True)
+    event_id = Column(String, index=True)  # Google Calendar Event ID
+    calendar_id = Column(String)  # Google Calendar ID
+    account_email = Column(String)  # Which Google account this came from
+    summary = Column(String)  # Event title
+    description = Column(String, nullable=True)
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    location = Column(String, nullable=True)
+    response_status = Column(String)  # accepted, tentative, declined, needsAction
+    attendees_count = Column(Integer)
+    organizer_email = Column(String)
+    is_recurring = Column(Boolean, default=False)
+    recurring_event_id = Column(String, nullable=True)
+    conference_link = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (UniqueConstraint("event_id", "calendar_id", name="uq_event_calendar"),)
