@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     ]
     GOOGLE_CALENDAR_EMAILS: List[str] = []  # List of Google account emails to sync
     ALLOWED_CALENDAR_IDS: Optional[List[str]] = None  # List of calendar IDs to include (None means all calendars)
+    WEEKLY_REFLECTIONS_SPREADSHEET_ID: str = os.getenv(
+        "WEEKLY_REFLECTIONS_SPREADSHEET_ID", ""
+    )  # Google Sheet ID for weekly reflections
 
     class Config:
         case_sensitive = True

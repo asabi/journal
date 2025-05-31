@@ -398,3 +398,21 @@ class CalendarEvent(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     __table_args__ = (UniqueConstraint("event_id", "calendar_id", name="uq_event_calendar"),)
+
+
+class WeeklyReflection(Base):
+    __tablename__ = "weekly_reflections"
+    id = Column(Integer, primary_key=True)
+    email = Column(String)  # Email of the person submitting
+    timestamp = Column(DateTime)  # When the reflection was submitted
+    proud_of = Column(String, nullable=True)  # What are you proud of this week?
+    principles_upheld = Column(String, nullable=True)  # Did you uphold any company principles?
+    learnings = Column(String, nullable=True)  # Any learnings or new insights?
+    do_differently = Column(String, nullable=True)  # Anything you'd do differently?
+    challenges = Column(String, nullable=True)  # What challenges did you face?
+    week_word = Column(String, nullable=True)  # One word to describe your week
+    week_feeling = Column(String, nullable=True)  # How did this week feel overall?
+    additional_notes = Column(String, nullable=True)  # Anything else to share?
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (UniqueConstraint("email", "timestamp", name="uq_reflection_email_timestamp"),)

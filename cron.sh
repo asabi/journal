@@ -43,4 +43,7 @@ make_api_call "/calendar/sync-today" "" "POST"
 # Get weather for Richmond, BC
 make_api_call "/weather/all?location=Richmond,BC" "" "POST"
 
+# Sync weekly reflections
+make_api_call "/sheets/sync-reflections" "" "POST"
+
 echo "[$CURRENT_DATE] Daily sync completed" 

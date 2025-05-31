@@ -4,6 +4,7 @@ from apis.weather.routes import router as weather_router
 from apis.locations.routes import router as locations_router
 from apis.health.routes import router as health_router
 from apis.calendar import routes as calendar_routes
+from apis.sheets.routes import router as sheets_router
 from core.db import Base, engine
 from core.security import get_api_key
 
@@ -27,13 +28,14 @@ app.include_router(weather_router, prefix="/weather", tags=["Weather"], dependen
 app.include_router(locations_router, prefix="/locations", tags=["Location"], dependencies=[Depends(get_api_key)])
 app.include_router(health_router, prefix="/health", tags=["Health"], dependencies=[Depends(get_api_key)])
 app.include_router(calendar_routes.router, prefix="/calendar", tags=["Calendar"], dependencies=[Depends(get_api_key)])
+app.include_router(sheets_router, prefix="/sheets", tags=["Sheets"], dependencies=[Depends(get_api_key)])
 
 
 @app.get("/")
 async def read_root():
     return {
         "message": "Life Journal API",
-        "available_endpoints": ["/weather", "/google", "/locations", "/health", "/calendar"],
+        "available_endpoints": ["/weather", "/google", "/locations", "/health", "/calendar", "/sheets"],
     }
 
 

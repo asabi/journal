@@ -5,7 +5,7 @@ life_journal_api/
 │   ├── weather/
 │   │   ├── __init__.py
 │   │   └── routes.py
-│   ├── google/
+│   ├── calendar/
 │   │   ├── __init__.py
 │   │   └── routes.py
 │   ├── health/
