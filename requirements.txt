@@ -10,4 +10,6 @@ psycopg2-binary >=2.9.0
 geopy >=2.0.0
 google-auth-oauthlib>=0.4.6
 google-api-python-client>=2.0.0
-pytz
+pytz >=2024.1
+boto3 >=1.35.0
+python-multipart >=0.0.9

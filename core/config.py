@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings
 import dotenv
 import os
 from typing import List, Dict, Optional
+from pydantic import Field
 
 # Load environment variables from .env file
 dotenv.load_dotenv()
@@ -30,6 +31,16 @@ class Settings(BaseSettings):
     WEEKLY_REFLECTIONS_SPREADSHEET_ID: str = os.getenv(
         "WEEKLY_REFLECTIONS_SPREADSHEET_ID", ""
     )  # Google Sheet ID for weekly reflections
+
+    # AWS Settings
+    AWS_ACCESS_KEY_ID: Optional[str] = Field(None, env="AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY: Optional[str] = Field(None, env="AWS_SECRET_ACCESS_KEY")
+    AWS_REGION: str = Field("us-east-1", env="AWS_REGION")
+    AWS_BUCKET_NAME: str = Field("daily_food_images", env="AWS_BUCKET_NAME")
+
+    # Ollama Settings
+    OLLAMA_MODEL: str = Field("llava", env="OLLAMA_MODEL")  # Default to llava if not specified
+    OLLAMA_URL: str = Field("http://100.119.144.30:11434", env="OLLAMA_URL")
 
     class Config:
         case_sensitive = True

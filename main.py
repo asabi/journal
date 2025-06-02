@@ -5,6 +5,7 @@ from apis.locations.routes import router as locations_router
 from apis.health.routes import router as health_router
 from apis.calendar import routes as calendar_routes
 from apis.sheets.routes import router as sheets_router
+from apis.food.routes import router as food_router
 from core.db import Base, engine
 from core.security import get_api_key
 
@@ -29,6 +30,7 @@ app.include_router(locations_router, prefix="/locations", tags=["Location"], dep
 app.include_router(health_router, prefix="/health", tags=["Health"], dependencies=[Depends(get_api_key)])
 app.include_router(calendar_routes.router, prefix="/calendar", tags=["Calendar"], dependencies=[Depends(get_api_key)])
 app.include_router(sheets_router, prefix="/sheets", tags=["Sheets"], dependencies=[Depends(get_api_key)])
+app.include_router(food_router, prefix="/food", tags=["food"], dependencies=[Depends(get_api_key)])
 
 
 @app.get("/")
@@ -42,4 +44,4 @@ async def read_root():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, timeout_keep_alive=300)

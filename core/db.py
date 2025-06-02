@@ -416,3 +416,29 @@ class WeeklyReflection(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     __table_args__ = (UniqueConstraint("email", "timestamp", name="uq_reflection_email_timestamp"),)
+
+
+class FoodImage(Base):
+    __tablename__ = "food_images"
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    s3_bucket = Column(String, nullable=False)
+    s3_region = Column(String, nullable=False)
+    s3_key = Column(String, nullable=False)
+    raw_analysis = Column(String)  # Store the full AI analysis for reference
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class FoodLog(Base):
+    __tablename__ = "food_logs"
+    id = Column(Integer, primary_key=True)
+    image_id = Column(Integer, ForeignKey("food_images.id"))
+    food_name = Column(String, nullable=False)
+    portion_size = Column(String)  # e.g., "1 cup", "200g"
+    calories = Column(Float)
+    confidence = Column(Float)  # AI's confidence in the detection
+    meal_type = Column(String, nullable=True)  # breakfast, lunch, dinner, snack
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship to parent image
+    image = relationship("FoodImage", backref="food_items")
