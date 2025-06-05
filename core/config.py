@@ -42,6 +42,20 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = Field("llava", env="OLLAMA_MODEL")  # Default to llava if not specified
     OLLAMA_URL: str = Field("http://100.119.144.30:11434", env="OLLAMA_URL")
 
+    # Vector Database Settings
+    VECTOR_DB_URL: str = Field("http://localhost:6333", env="VECTOR_DB_URL")
+
+    # Vector Embedding Settings (separate from main Ollama for flexibility)
+    VECTOR_EMBEDDING_OLLAMA_MODEL: str = Field("qwen3:32b", env="VECTOR_EMBEDDING_OLLAMA_MODEL")
+    VECTOR_EMBEDDING_OLLAMA_URL: str = Field("http://100.119.144.30:11434", env="VECTOR_EMBEDDING_OLLAMA_URL")
+
+    # Summary Generation Settings (lightweight model for faster summaries)
+    SUMMARY_OLLAMA_MODEL: str = Field("qwen3:7b", env="SUMMARY_OLLAMA_MODEL")
+    SUMMARY_OLLAMA_URL: str = Field("http://100.119.144.30:11434", env="SUMMARY_OLLAMA_URL")
+
+    # Timezone Settings
+    TIMEZONE: str = Field("America/Vancouver", env="TIMEZONE")
+
     class Config:
         case_sensitive = True
         env_file = ".env"

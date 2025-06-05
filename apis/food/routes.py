@@ -6,31 +6,44 @@ from .ollama import OllamaAPI
 from datetime import datetime, time
 from typing import List, Optional
 import json
+import pytz
+from core.config import settings
 
 router = APIRouter()
 ollama_api = OllamaAPI()
 s3_handler = S3Handler()
 
 
-def determine_meal_type(current_time: time) -> str:
+def determine_meal_type(current_datetime: datetime, timezone_str: str = None) -> str:
     """
-    Determine meal type based on time of day:
+    Determine meal type based on time of day in the specified timezone:
     - Breakfast: 5:00 AM - 10:59 AM
     - Brunch: 11:00 AM - 11:59 AM
     - Lunch: 12:00 PM - 3:59 PM
     - Snack: 4:00 PM - 4:59 PM
     - Dinner: 5:00 PM - 9:59 PM
-    - Late Snack: 08:00 PM - 4:59 AM
+    - Late Snack: 10:00 PM - 4:59 AM
     """
-    if time(5, 0) <= current_time < time(11, 0):
+    if timezone_str is None:
+        timezone_str = settings.TIMEZONE
+
+    # Convert UTC datetime to local timezone
+    timezone = pytz.timezone(timezone_str)
+    if current_datetime.tzinfo is None:
+        # Assume UTC if no timezone info
+        current_datetime = pytz.UTC.localize(current_datetime)
+
+    local_time = current_datetime.astimezone(timezone).time()
+
+    if time(5, 0) <= local_time < time(11, 0):
         return "breakfast"
-    elif time(11, 0) <= current_time < time(12, 0):
+    elif time(11, 0) <= local_time < time(12, 0):
         return "brunch"
-    elif time(12, 0) <= current_time < time(16, 0):
+    elif time(12, 0) <= local_time < time(16, 0):
         return "lunch"
-    elif time(16, 0) <= current_time < time(17, 0):
+    elif time(16, 0) <= local_time < time(17, 0):
         return "snack"
-    elif time(17, 0) <= current_time < time(20, 0):
+    elif time(17, 0) <= local_time < time(20, 0):
         return "dinner"
     else:  # Between 10 PM and 5 AM
         return "late_snack"
@@ -50,7 +63,7 @@ async def analyze_food(
         # If meal_type is not provided, determine it based on current time
         if not meal_type:
             current_time = datetime.now().time()
-            meal_type = determine_meal_type(current_time)
+            meal_type = determine_meal_type(datetime.now())
 
         # Read image data
         image_data = await image.read()

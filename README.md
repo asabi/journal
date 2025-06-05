@@ -189,3 +189,28 @@ alembic upgrade head
 - Google Calendar tokens are automatically saved in the `google_creds` directory as `{email_prefix}_token.pickle` files.
 - The first time you run any calendar endpoint, it will require browser-based authentication.
 - Token files are automatically refreshed when expired.
+
+
+Run a qdrant vector database
+
+```
+docker run -p 6333:6333 --restart unless-stopped -v $(pwd)/qdrant_storage:/qdrant/storage --name qdrant-storage qdrant/qdrant
+
+On Windows:
+
+docker run -p 6333:6333 --restart unless-stopped -v c:\Users\alon\Documents\qdrant_storage:/qdrant/storage -d --name qdrant-storage qdrant/qdrant
+
+
+To check the embedding size of a model run:
+
+```
+curl -s -X POST "http://100.119.144.30:11434/api/embeddings" -H "Content-Type: application/json" -d '{"model": "qwen3:32b", "prompt": "test"}' | jq '.embedding | length'
+```
+
+To run a gui for qdrant
+
+```
+docker run -p 3000:80 --name qdrant-ui \
+  -e QDRANT_URL=http://host.docker.internal:6333 \
+  zhaytam/qdrant-ui
+```
