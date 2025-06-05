@@ -4,7 +4,7 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Source the .env file if it exists
-if [ -f "$SCRIPT_DIR/.env" ]; then
+if [ -f "$SCRIPT_DIR/../.env" ]; then
     # Export all variables from .env file, excluding comments and section headers
     export $(cat "$SCRIPT_DIR/../.env" | grep -v '^#' | grep -v '^\[.*\]' | xargs)
 else
@@ -45,5 +45,8 @@ make_api_call "/weather/all?location=Richmond,BC" "" "POST"
 
 # Sync weekly reflections
 make_api_call "/sheets/sync-reflections" "" "POST"
+
+# Generate daily summary
+make_api_call "/summaries/create?target_date=$(date +%Y-%m-%d)" "" "POST"
 
 echo "[$CURRENT_DATE] Daily sync completed" 
